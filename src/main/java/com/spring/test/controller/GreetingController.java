@@ -28,7 +28,15 @@ public class GreetingController {
             nextId = BigInteger.ONE;
         }
 
-        if(greeting.getId() != null) {
+        greeting.setId(nextId);
+        nextId = nextId.add(BigInteger.ONE);
+        greetingMap.put(greeting.getId(), greeting);
+
+        return greeting;
+    }
+
+    public static Greeting update(Greeting greeting) {
+        if(validateGreeting(greeting)) {
             Greeting oldGreeting = greetingMap.get(greeting.getId());
             if(oldGreeting ==null){
                 return null;
@@ -37,10 +45,7 @@ public class GreetingController {
             greetingMap.put(greeting.getId(),greeting);
             return greeting;
         }
-        greeting.setId(nextId);
-        nextId = nextId.add(BigInteger.ONE);
-        greetingMap.put(greeting.getId(), greeting);
-        return greeting;
+        return null;
     }
 
     static {
@@ -53,7 +58,7 @@ public class GreetingController {
 
     private static boolean delete(BigInteger id){
         Greeting deletedGreeting = greetingMap.remove(id);
-        if(validateGreeting(deletedGreeting)) {
+        if(!validateGreeting(deletedGreeting)) {
             return false;
         }
         return true;
@@ -70,7 +75,7 @@ public class GreetingController {
     @RequestMapping(value = "api/greetings/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Greeting> getGreeting(@PathVariable("id") BigInteger id) {
         Greeting greeting= greetingMap.get(id);
-        if(validateGreeting(greeting)) {
+        if(!validateGreeting(greeting)) {
             return new ResponseEntity<Greeting>(HttpStatus.NOT_FOUND);
         }
 
@@ -85,9 +90,9 @@ public class GreetingController {
 
     @RequestMapping(value = "api/greetings/{id}", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Greeting> updateGreeting(@RequestBody Greeting greeting) {
-        Greeting updatedGreeting = save(greeting);
+        Greeting updatedGreeting = update(greeting);
 
-        if(validateGreeting(updatedGreeting)) {
+        if(!validateGreeting(updatedGreeting)) {
             return new ResponseEntity<Greeting>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
@@ -106,7 +111,13 @@ public class GreetingController {
     }
 
     private static boolean validateGreeting(Greeting greeting){
-        return greeting == null;
+        if(greeting == null){
+            return true;
+        }else if(greeting.getId() != null){
+            return true;
+        }else{
+            return false;
+        }
     }
 }
 

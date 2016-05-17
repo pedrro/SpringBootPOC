@@ -15,5 +15,4 @@ public class Greeting {
     public BigInteger id;
     public String text;
 
-
 }

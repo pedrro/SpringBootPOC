@@ -36,7 +36,7 @@ public class GreetingDAOImpl implements CrudDAO<Greeting> {
     @Override
     public Greeting update(Greeting greeting) {
         if (validateGreeting(greeting)) {
-            com.spring.test.model.Greeting oldGreeting = greetingMap.get(greeting.getId());
+            Greeting oldGreeting = greetingMap.get(greeting.getId());
             if (!validateGreeting(oldGreeting)) {
                 return null;
             }

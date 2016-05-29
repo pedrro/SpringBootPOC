@@ -65,7 +65,7 @@ public class GreetingController {
         Greeting updatedGreeting = (Greeting) dao.update(greeting);
 
         if (!validateGreeting(updatedGreeting)) {
-            log.info("Invalid greeting - id: {}", updatedGreeting.getId());
+            log.info("Invalid greeting - id: {}", greeting.getId());
             return new ResponseEntity<Greeting>(HttpStatus.NOT_FOUND);
         }
         log.info("Updating greeting - id: {}", updatedGreeting.getId());
